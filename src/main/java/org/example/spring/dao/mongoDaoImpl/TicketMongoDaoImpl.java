@@ -1,19 +1,19 @@
 package org.example.spring.dao.mongoDaoImpl;
 
+import org.example.spring.model.Entity.TicketEntity;
+import org.example.spring.model.Entity.UserEntity;
 import org.example.spring.model.MongoEntity.TicketMongoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.stereotype.Repository;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
-import java.util.List;
-import java.util.Optional;
-
-public class TicketMongoDaoImpl implements MongoRepository<TicketMongoEntity, Long> {
+@Repository
+public class TicketMongoDaoImpl {
     private MongoTemplate template;
 
     public TicketMongoDaoImpl() {
@@ -21,112 +21,27 @@ public class TicketMongoDaoImpl implements MongoRepository<TicketMongoEntity, Lo
 
     @Autowired
     public TicketMongoDaoImpl(MongoTemplate template) {
+
         this.template = template;
     }
 
-    @Override
-    public <S extends TicketMongoEntity> S save(S s) {
-        return null;
-    }
-
-    @Override
-    public <S extends TicketMongoEntity> List<S> saveAll(Iterable<S> iterable) {
-        return null;
-    }
-
-    @Override
-    public Optional<TicketMongoEntity> findById(Long aLong) {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean existsById(Long aLong) {
-        return false;
-    }
-
-    @Override
-    public List<TicketMongoEntity> findAll() {
-        return null;
-    }
-
-    @Override
-    public Iterable<TicketMongoEntity> findAllById(Iterable<Long> iterable) {
-        return null;
-    }
-
-    @Override
-    public long count() {
-        return 0;
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-
-    }
-
-    @Override
-    public void delete(TicketMongoEntity ticketMongoEntity) {
-
-    }
-
-    @Override
-    public void deleteAll(Iterable<? extends TicketMongoEntity> iterable) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
-    }
-
-    @Override
-    public List<TicketMongoEntity> findAll(Sort sort) {
-        return null;
-    }
-
-    @Override
-    public Page<TicketMongoEntity> findAll(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public <S extends TicketMongoEntity> S insert(S ticketMongoEntity) {
+    public TicketMongoEntity insert(TicketMongoEntity ticketMongoEntity) {
         template.insert(ticketMongoEntity);
         return ticketMongoEntity;
     }
+    Criteria criteria = Criteria
+            .where("eventMongoEntity.id").is(1)
+            .and("userMongoEntity.id").is(2);
 
-    @Override
-    public <S extends TicketMongoEntity> List<S> insert(Iterable<S> iterable) {
-        return null;
+    public TicketEntity getAggregationTicketCount() {
+        ProjectionOperation projectionOperation=project("_id")
+                .and("eventMongoEntity._id").as("eventId")
+                .and("userMongoEntity._id").as("userId")
+                .andInclude("category", "place");
+        Aggregation aggregation = newAggregation(projectionOperation);
+
+        AggregationResults<TicketEntity> results=template.aggregate(aggregation,"ticketEntity", TicketEntity.class);
+        return results.getMappedResults().get(1);
     }
 
-    @Override
-    public <S extends TicketMongoEntity> Optional<S> findOne(Example<S> example) {
-        return Optional.empty();
-    }
-
-    @Override
-    public <S extends TicketMongoEntity> List<S> findAll(Example<S> example) {
-        return null;
-    }
-
-    @Override
-    public <S extends TicketMongoEntity> List<S> findAll(Example<S> example, Sort sort) {
-        return null;
-    }
-
-    @Override
-    public <S extends TicketMongoEntity> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public <S extends TicketMongoEntity> long count(Example<S> example) {
-        return 0;
-    }
-
-    @Override
-    public <S extends TicketMongoEntity> boolean exists(Example<S> example) {
-        return false;
-    }
 }

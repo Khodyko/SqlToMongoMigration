@@ -54,18 +54,16 @@ public class SqlToMongoMigrationService {
 
 
         @Transactional
-//    @Override
     public void getSqlData() {
 
         eventEntityList = eventSqlDao.getAllEventEntity();
         userEntityList = userSqlDao.getAllUserEntity();
         ticketEntityList = ticketSQLDao.getAllTicketEntity();
-        userSqlDao.addUserEntity(new UserEntity("asdadsadadadadad","sdadaddsaa"));
+
 
     }
 
         @Transactional
-//    @Override
     public void migrateDataToMongo() {
         List<EventMongoEntity> eventMongoEntities = new ArrayList<>();
         List<UserMongoEntity> userMongoEntities = new ArrayList<>();

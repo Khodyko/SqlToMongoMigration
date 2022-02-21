@@ -1,6 +1,8 @@
 package org.example.spring.model.MongoEntity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -13,6 +15,7 @@ public class EventMongoEntity implements Serializable {
 
     @Id
     private long id;
+    @Indexed(name = "first_name_index")
     private String title;
     private Date date;
 
