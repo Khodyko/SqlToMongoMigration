@@ -1,6 +1,5 @@
 package org.example.spring.facade;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.spring.model.Event;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import static org.apache.logging.log4j.Level.DEBUG;
 import static org.apache.logging.log4j.Level.WARN;
-
 
 public class FacadeImpl implements BookingFacade {
 
@@ -45,7 +43,6 @@ public class FacadeImpl implements BookingFacade {
                 .getStackTrace()[1].getMethodName() + " method start");
         return eventServiceImpl.getEventById(eventId);
     }
-
 
     @Override
     public List<Event> getEventsByTitle(String title, int pageSize,
@@ -97,7 +94,6 @@ public class FacadeImpl implements BookingFacade {
     public User getUserById(long userId) {
         logger.log(DEBUG, Thread.currentThread()
                 .getStackTrace()[1].getMethodName() + " method start");
-
         return userServiceImpl.getUserById(userId);
     }
 
@@ -109,8 +105,7 @@ public class FacadeImpl implements BookingFacade {
     }
 
     @Override
-    public List<User> getUsersByName(String name, int pageSize,
-                                     int pageNum) {
+    public List<User> getUsersByName(String name, int pageSize, int pageNum) {
         logger.log(DEBUG, Thread.currentThread()
                 .getStackTrace()[1].getMethodName() + " method start");
         try {
@@ -189,7 +184,6 @@ public class FacadeImpl implements BookingFacade {
 
     @Override
     public boolean cancelTicket(long ticketId) {
-
         logger.log(DEBUG, Thread.currentThread()
                 .getStackTrace()[1].getMethodName() + " method start");
         return ticketServiceImpl.cancelTicket(ticketId);

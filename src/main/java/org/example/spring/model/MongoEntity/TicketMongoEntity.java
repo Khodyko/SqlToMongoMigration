@@ -1,6 +1,5 @@
 package org.example.spring.model.MongoEntity;
 
-import org.example.spring.model.Ticket;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -52,7 +51,10 @@ public class TicketMongoEntity implements Serializable {
         if (this == o) return true;
         if (!(o instanceof TicketMongoEntity)) return false;
         TicketMongoEntity that = (TicketMongoEntity) o;
-        return id == that.id && place == that.place && Objects.equals(eventMongoEntity, that.eventMongoEntity) && Objects.equals(userMongoEntity, that.userMongoEntity) && Objects.equals(category, that.category);
+        return id == that.id && place == that.place
+                             && Objects.equals(eventMongoEntity, that.eventMongoEntity)
+                             && Objects.equals(userMongoEntity, that.userMongoEntity)
+                             && Objects.equals(category, that.category);
     }
 
     @Override

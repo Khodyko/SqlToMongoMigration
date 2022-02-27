@@ -26,7 +26,6 @@ public class EventDaoImpl implements EventDao {
         logger.log(DEBUG, this.getClass().getSimpleName() + " was created");
     }
 
-
     public ValidatorDao getValidatorDao() {
         return validatorDao;
     }
@@ -42,7 +41,6 @@ public class EventDaoImpl implements EventDao {
     public void setStorage(Storage storage) {
         this.storage = storage;
     }
-
 
     @Override
     public Event getEventById(long eventId) {

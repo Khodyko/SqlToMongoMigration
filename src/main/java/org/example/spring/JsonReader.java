@@ -33,7 +33,6 @@ public class JsonReader implements Serializable {
             TypeFactory typeFactory = mapper.getTypeFactory();
             return mapper.readValue(Paths.get(jsonPath).toFile(),
                     typeFactory.constructMapType(Map.class, String.class, type));
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

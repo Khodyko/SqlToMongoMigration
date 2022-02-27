@@ -3,8 +3,8 @@ package org.example.spring.dao.daoImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.spring.Storage;
-import org.example.spring.dao.exceptionDao.DaoException;
 import org.example.spring.dao.TicketDao;
+import org.example.spring.dao.exceptionDao.DaoException;
 import org.example.spring.model.Entity.TicketEntity;
 import org.example.spring.model.Event;
 import org.example.spring.model.Ticket;
@@ -25,7 +25,6 @@ public class TicketDaoImpl implements TicketDao {
     public TicketDaoImpl() {
         logger.log(DEBUG, this.getClass().getSimpleName() + " was created");
     }
-
 
     public ValidatorDao getValidatorDao() {
         return validatorDao;
@@ -51,7 +50,6 @@ public class TicketDaoImpl implements TicketDao {
         Map<String, TicketEntity> ticketEntityMap = storage.getTicketMap();
         TicketEntity ticket;
         long ticketId = 0;
-
         for (Map.Entry<String, TicketEntity> entry : ticketEntityMap.entrySet()) {
             if (entry.getValue().getId() >= ticketId) {
                 ticketId = entry.getValue().getId() + 1;
@@ -59,7 +57,6 @@ public class TicketDaoImpl implements TicketDao {
         }
         ticket = new TicketEntity(ticketId, eventId, userId, category, place);
         ticketEntityMap.put("ticket:" + ticketId, ticket);
-
         return ticket;
     }
 
@@ -74,7 +71,6 @@ public class TicketDaoImpl implements TicketDao {
                 if (entry.getValue().getUserId() == user.getId()) {
                     ticketList.add(entry.getValue());
                 }
-
                 return getPagedList(ticketList, pageSize, pageNum);
             }
         }
@@ -92,7 +88,6 @@ public class TicketDaoImpl implements TicketDao {
                 if (entry.getValue().getEventId() == event.getId()) {
                     ticketList.add(entry.getValue());
                 }
-
                 return getPagedList(ticketList, pageSize, pageNum);
             }
         }
@@ -134,5 +129,4 @@ public class TicketDaoImpl implements TicketDao {
                 limit(pageSize * pageNum + pageSize).
                 collect(Collectors.toList());
     }
-
 }

@@ -4,9 +4,7 @@ import org.example.spring.model.MongoEntity.EventMongoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-
-public class EventMongoDaoImpl  {
-
+public class EventMongoDaoImpl {
 
     private MongoTemplate template;
 
@@ -15,13 +13,10 @@ public class EventMongoDaoImpl  {
         this.template = template;
     }
 
-
-    public EventMongoDaoImpl() {
-    }
+    public EventMongoDaoImpl() {}
 
     public <S extends EventMongoEntity> S insert(S eventMongoEntity) {
         template.insert(eventMongoEntity);
         return eventMongoEntity;
     }
-
 }

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public interface Ticket {
     @JsonSerialize
     public enum Category {
-
         @JsonProperty("STANDARD")
         STANDARD("STANDARD"),
         @JsonProperty("PREMIUM")
@@ -20,13 +19,10 @@ public interface Ticket {
         public String getName() {
             return name;
         }
-
         private String name;
-
         Category(String name) {
             this.name = name;
         }
-
     }
 
     /**
@@ -53,5 +49,4 @@ public interface Ticket {
     int getPlace();
 
     void setPlace(int place);
-
 }

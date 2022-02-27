@@ -15,7 +15,6 @@ public class UserMongoDaoImpl {
         this.template = template;
     }
 
-
     public <S extends UserMongoEntity> S insert(S userMongoEntity) {
         template.insert(userMongoEntity);
         return userMongoEntity;

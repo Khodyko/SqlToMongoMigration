@@ -14,19 +14,17 @@ import org.example.spring.model.MongoEntity.EventMongoEntity;
 import org.example.spring.model.MongoEntity.TicketMongoEntity;
 import org.example.spring.model.MongoEntity.UserMongoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class SqlToMongoMigrationService {
-
     private List<EventEntity> eventEntityList;
     private List<UserEntity> userEntityList;
     private List<TicketEntity> ticketEntityList;
-
     private EventSqlDaoImpl eventSqlDao;
     private UserSqlDaoImpl userSqlDao;
     private TicketSQLDaoImpl ticketSQLDao;
@@ -53,30 +51,24 @@ public class SqlToMongoMigrationService {
     }
 
 
-        @Transactional
+    @Transactional
     public void getSqlData() {
-
         eventEntityList = eventSqlDao.getAllEventEntity();
         userEntityList = userSqlDao.getAllUserEntity();
         ticketEntityList = ticketSQLDao.getAllTicketEntity();
-
-
     }
 
-        @Transactional
+    @Transactional
     public void migrateDataToMongo() {
         List<EventMongoEntity> eventMongoEntities = new ArrayList<>();
         List<UserMongoEntity> userMongoEntities = new ArrayList<>();
         List<TicketMongoEntity> ticketMongoEntities = new ArrayList<>();
-
         for (EventEntity event : eventEntityList) {
             eventMongoEntities.add(mongoEntityConverter.convertEntityToMongoEntity(event));
         }
         for (UserEntity user : userEntityList) {
             userMongoEntities.add(mongoEntityConverter.convertEntityToMongoEntity(user));
         }
-        System.out.println("!!!!!!!!!!!!!!!!!!mongo events: " + eventMongoEntities);
-        System.out.println("mongo users: " + userMongoEntities);
         for (TicketEntity ticket : ticketEntityList) {
             EventMongoEntity eventMongoEntity = null;
             UserMongoEntity userMongoEntity = null;
@@ -97,7 +89,6 @@ public class SqlToMongoMigrationService {
             }
             ticketMongoEntities.add(mongoEntityConverter.convertEntityToMongoEntity(ticket, eventMongoEntity, userMongoEntity));
         }
-        System.out.println("mongo tickets: " + ticketMongoEntities);
         //adding data to MongoDB
         for (int i = 0; i < eventMongoEntities.size(); i++) {
             eventMongoDao.insert(eventMongoEntities.get(i));
@@ -109,5 +100,4 @@ public class SqlToMongoMigrationService {
             ticketMongoDao.insert(ticketMongoEntities.get(i));
         }
     }
-
 }

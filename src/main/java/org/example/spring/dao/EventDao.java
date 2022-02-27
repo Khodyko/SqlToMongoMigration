@@ -19,5 +19,4 @@ public interface EventDao {
     public Event updateEvent(Event event);
 
     public boolean deleteEvent(long eventId);
-
 }

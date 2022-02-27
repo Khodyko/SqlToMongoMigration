@@ -13,7 +13,6 @@ import java.util.List;
 
 import static org.apache.logging.log4j.Level.DEBUG;
 
-
 public class EventServiceImpl implements EventService {
     private EventDaoImpl eventDaoImpl;
     private final static Logger logger = LogManager.getLogger();
@@ -21,6 +20,9 @@ public class EventServiceImpl implements EventService {
     public EventServiceImpl(EventDaoImpl eventDaoImpl) {
         this.eventDaoImpl = eventDaoImpl;
         logger.log(DEBUG, this.getClass().getSimpleName() + " was created");
+    }
+
+    public EventServiceImpl() {
     }
 
     @Override
@@ -37,7 +39,6 @@ public class EventServiceImpl implements EventService {
         } catch (DaoException e) {
             throw new ServiceException(e.getMessage(), e);
         }
-
     }
 
     @Override

@@ -45,7 +45,7 @@ public class TicketServiceImpl implements TicketService {
         if (eventEntity == null) {
             throw new ServiceException("there are no event with id=" + eventId);
         }
-        List<Ticket> bookedTickets = getBookedTickets(eventEntity, Integer.MAX_VALUE, 0); // pageNum 0? or 1?
+        List<Ticket> bookedTickets = getBookedTickets(eventEntity, Integer.MAX_VALUE, 0);
         for (int i = 0; i < bookedTickets.size(); i++) {
             if (bookedTickets.get(i).getPlace() == place) {
                 throw new ServiceException("place №" + place + " is already booked");

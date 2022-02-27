@@ -1,6 +1,5 @@
 package org.example.spring.model.Entity;
 
-
 import org.example.spring.model.Ticket;
 
 import java.io.Serializable;
@@ -80,7 +79,10 @@ public class TicketEntity implements Ticket, Serializable {
         if (this == o) return true;
         if (!(o instanceof TicketEntity)) return false;
         TicketEntity that = (TicketEntity) o;
-        return id == that.id && eventId == that.eventId && userId == that.userId && place == that.place && category == that.category;
+        return id == that.id && eventId == that.eventId
+                             && userId == that.userId
+                             && place == that.place
+                             && category == that.category;
     }
 
     @Override

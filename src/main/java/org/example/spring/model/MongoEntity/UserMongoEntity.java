@@ -26,30 +26,6 @@ public class UserMongoEntity {
         this.name = name;
         this.email = email;
     }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("UserMongoEntity{");
-        sb.append("id=").append(id);
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserMongoEntity)) return false;
-        UserMongoEntity that = (UserMongoEntity) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(email, that.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, email);
-    }
-
     public long getId() {
         return id;
     }
@@ -72,5 +48,29 @@ public class UserMongoEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserMongoEntity)) return false;
+        UserMongoEntity that = (UserMongoEntity) o;
+        return id == that.id && Objects.equals(name, that.name)
+                             && Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UserMongoEntity{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

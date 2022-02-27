@@ -10,8 +10,7 @@ public class DaoException extends Exception {
         super(cause);
     }
 
-    public DaoException() {
-    }
+    public DaoException() {super();}
 
     public DaoException(String message) {
         super(message);

@@ -16,92 +16,9 @@
      http://www.springframework.org/schema/aop
      https://www.springframework.org/schema/aop/spring-aop.xsd">
     <context:annotation-config/>
-    <aop:config>
-        <aop:pointcut id="fooServiceOperation"
-                      expression="execution(* org.example.spring.service.serviceImpl.sqlToMongoMigrationService.SqlToMongoMigrationService.getSqlData())"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="fooServiceOperation"/>
-    </aop:config>
-    <!--TransactionSQL-->
-    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="DataSource" ref="DataSource"/>
-    </bean>
-    <tx:advice id="txAdvice" transaction-manager="txManager">
-        <!-- the transactional semantics... -->
-        <tx:attributes>
-            <!-- all methods starting with 'get' are read-only -->
-            <tx:method name="get*" read-only="true"/>
-            <!--             other methods use the default transaction settings (see below) -->
-            <tx:method name="*"/>
-        </tx:attributes>
-    </tx:advice>
-
-
-    <!--TransactionMongo-->
-    <bean id="mongoTxManager" class="org.springframework.data.mongodb.MongoTransactionManager">
-        <property name="dbFactory" ref="mongoDbFactory"/>
-    </bean>
-    <tx:advice id="mongoTxAdvice" transaction-manager="mongoTxManager">
-        <!-- the transactional semantics... -->
-        <tx:attributes>
-            <!-- other methods use the default transaction settings (see below) -->
-            <tx:method name="migrateDataToMongo"/>
-        </tx:attributes>
-    </tx:advice>
-    <aop:config>
-        <aop:advisor advice-ref="mongoTxAdvice" pointcut-ref="fooServiceOperation"/>
-    </aop:config>
-    <!--    MYSQL-->
-    <bean id="DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <!-- results in a setDriverClassName(String) call -->
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost/ticketapp?useSSL=false"/>
-        <property name="username" value="root"/>
-        <property name="password" value="root"/>
-        <!--        <property name="initialSize" value="5"></property>-->
-    </bean>
-
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="DataSource" ref="DataSource"></property>
-    </bean>
-
-    <bean id="eventSqlDaoImpl" class="org.example.spring.dao.sqlDaoImpl.EventSqlDaoImpl">
-        <constructor-arg ref="jdbcTemplate"/>
-    </bean>
-    <bean id="userSqlDaoImpl" class="org.example.spring.dao.sqlDaoImpl.UserSqlDaoImpl">
-        <constructor-arg ref="jdbcTemplate"/>
-    </bean>
-    <bean id="ticketSqlDaoImpl" class="org.example.spring.dao.sqlDaoImpl.TicketSQLDaoImpl">
-        <constructor-arg ref="jdbcTemplate"/>
-    </bean>
-    <!--    mongo-->
-<!--    <mongo:mongo-client host="localhost" port="27017" id="mongoClient"/>-->
-    <mongo:db-factory dbname="mongoTest" mongo-client-ref="replicaSetMongo" id="mongoDbFactory"/>
-
-    <mongo:mongo-client id="replicaSetMongo" connection-string="mongodb+srv://root:root@cluster0.0hpdq.mongodb.net/MongoTest?retryWrites=true&amp;w=majority"/>
-
-
-    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
-    </bean>
-
-    <bean class=
-                  "org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
-
-    <mongo:repositories
-            base-package="org.example.spring.dao.mongoDaoImpl" mongo-template-ref="mongoTemplate"/>
-
-    <bean id="eventMongoDaoImpl" class="org.example.spring.dao.mongoDaoImpl.EventMongoDaoImpl">
-        <constructor-arg ref="mongoTemplate"/>
-    </bean>
-    <bean id="userMongoDaoImpl" class="org.example.spring.dao.mongoDaoImpl.UserMongoDaoImpl">
-        <constructor-arg ref="mongoTemplate"/>
-    </bean>
-    <bean id="ticketMongoDaoImpl" class="org.example.spring.dao.mongoDaoImpl.TicketMongoDaoImpl">
-        <constructor-arg ref="mongoTemplate"/>
-    </bean>
-
     <bean id="booking"
           class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+
         <property name="properties">
             <value>
                 event.file.path=src/main/resources/event_data.json
@@ -111,15 +28,80 @@
         </property>
     </bean>
 
-
-    <bean id="storage" class="org.example.spring.Storage" init-method="initMethod">
-        <property name="jsonReader" ref="jsonReader"/>
+    <!--TransactionSQL-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="DataSource" ref="DataSource"/>
     </bean>
-    <bean id="validatorDao" class="org.example.spring.dao.daoImpl.ValidatorDao"></bean>
-    <bean id="jsonReader" class="org.example.spring.JsonReader"/>
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--TransactionMongo-->
+    <bean id="mongoTxManager" class="org.springframework.data.mongodb.MongoTransactionManager">
+        <property name="dbFactory" ref="mongoDbFactory"/>
+    </bean>
+    <!--    AOP-->
+    <tx:advice id="mongoTxAdvice" transaction-manager="mongoTxManager">
+        <tx:attributes>
+            <tx:method name="migrateDataToMongo"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut id="fooServiceOperation"
+                      expression="execution(* org.example.spring.service.serviceImpl
+                                               .sqlToMongoMigrationService.SqlToMongoMigrationService.getSqlData())"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="fooServiceOperation"/>
+        <aop:advisor advice-ref="mongoTxAdvice" pointcut-ref="fooServiceOperation"/>
+    </aop:config>
+
+    <!--    MYSQL-->
+    <bean id="DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost/ticketapp?useSSL=false"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="DataSource" ref="DataSource"></property>
+    </bean>
+
+    <!--    mongo-->
+    <!--    <mongo:mongo-client host="localhost" port="27017" id="mongoClient"/>-->
+    <mongo:db-factory dbname="mongoTest" mongo-client-ref="replicaSetMongo" id="mongoDbFactory"/>
+    <mongo:mongo-client id="replicaSetMongo"
+                        connection-string="mongodb+srv://root:root@cluster0.0hpdq.mongodb.net/MongoTest?retryWrites=true&amp;w=majority"/>
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+    </bean>
+    <bean id="mongoConverter" class="org.example.spring.converter.MongoEntityConverter"/>
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    <mongo:repositories
+            base-package="org.example.spring.dao.mongoDaoImpl" mongo-template-ref="mongoTemplate"/>
+
+    <!--    Facade-->
+    <bean id="facadeImpl" class="org.example.spring.facade.FacadeImpl">
+        <constructor-arg ref="eventServiceImpl"/>
+        <constructor-arg ref="userServiceImpl"/>
+        <constructor-arg ref="ticketServiceImpl"/>
+    </bean>
+    <!--    Service-->
     <bean id="eventServiceImpl" class="org.example.spring.service.serviceImpl.EventServiceImpl" autowire="byName"/>
     <bean id="userServiceImpl" class="org.example.spring.service.serviceImpl.UserServiceImpl" autowire="byName"/>
     <bean id="ticketServiceImpl" class="org.example.spring.service.serviceImpl.TicketServiceImpl" autowire="byName"/>
+    <bean id="sqlToMongoMigrationService"
+          class="org.example.spring.service.serviceImpl.sqlToMongoMigrationService.SqlToMongoMigrationService">
+        <constructor-arg ref="eventMongoDaoImpl"/>
+        <constructor-arg ref="userMongoDaoImpl"/>
+        <constructor-arg ref="ticketMongoDaoImpl"/>
+        <constructor-arg ref="eventSqlDaoImpl"/>
+        <constructor-arg ref="userSqlDaoImpl"/>
+        <constructor-arg ref="ticketSqlDaoImpl"/>
+        <constructor-arg ref="mongoConverter"/>
+    </bean>
+    <!--    DAO-->
     <bean id="eventDaoImpl" class="org.example.spring.dao.daoImpl.EventDaoImpl">
         <property name="storage" ref="storage"/>
         <property name="validatorDao" ref="validatorDao"/>
@@ -132,22 +114,28 @@
         <property name="storage" ref="storage"/>
         <property name="validatorDao" ref="validatorDao"/>
     </bean>
-
-    <bean id="facadeImpl" class="org.example.spring.facade.FacadeImpl">
-        <constructor-arg ref="eventServiceImpl"/>
-        <constructor-arg ref="userServiceImpl"/>
-        <constructor-arg ref="ticketServiceImpl"/>
+    <bean id="eventSqlDaoImpl" class="org.example.spring.dao.sqlDaoImpl.EventSqlDaoImpl">
+        <constructor-arg ref="jdbcTemplate"/>
     </bean>
-
-    <bean id="mongoConverter" class="org.example.spring.converter.MongoEntityConverter"/>
-    <bean id="sqlToMongoMigrationService"
-          class="org.example.spring.service.serviceImpl.sqlToMongoMigrationService.SqlToMongoMigrationService">
-        <constructor-arg ref="eventMongoDaoImpl"/>
-        <constructor-arg ref="userMongoDaoImpl"/>
-        <constructor-arg ref="ticketMongoDaoImpl"/>
-        <constructor-arg ref="eventSqlDaoImpl"/>
-        <constructor-arg ref="userSqlDaoImpl"/>
-        <constructor-arg ref="ticketSqlDaoImpl"/>
-        <constructor-arg ref="mongoConverter"/>
+    <bean id="userSqlDaoImpl" class="org.example.spring.dao.sqlDaoImpl.UserSqlDaoImpl">
+        <constructor-arg ref="jdbcTemplate"/>
     </bean>
+    <bean id="ticketSqlDaoImpl" class="org.example.spring.dao.sqlDaoImpl.TicketSQLDaoImpl">
+        <constructor-arg ref="jdbcTemplate"/>
+    </bean>
+    <bean id="eventMongoDaoImpl" class="org.example.spring.dao.mongoDaoImpl.EventMongoDaoImpl">
+        <constructor-arg ref="mongoTemplate"/>
+    </bean>
+    <bean id="userMongoDaoImpl" class="org.example.spring.dao.mongoDaoImpl.UserMongoDaoImpl">
+        <constructor-arg ref="mongoTemplate"/>
+    </bean>
+    <bean id="ticketMongoDaoImpl" class="org.example.spring.dao.mongoDaoImpl.TicketMongoDaoImpl">
+        <constructor-arg ref="mongoTemplate"/>
+    </bean>
+    <bean id="validatorDao" class="org.example.spring.dao.daoImpl.ValidatorDao"></bean>
+
+    <bean id="storage" class="org.example.spring.Storage" init-method="initMethod">
+        <property name="jsonReader" ref="jsonReader"/>
+    </bean>
+    <bean id="jsonReader" class="org.example.spring.JsonReader"/>
 </beans>

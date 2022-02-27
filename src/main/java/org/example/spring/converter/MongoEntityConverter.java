@@ -8,19 +8,19 @@ import org.example.spring.model.MongoEntity.TicketMongoEntity;
 import org.example.spring.model.MongoEntity.UserMongoEntity;
 
 public class MongoEntityConverter {
-    public EventMongoEntity convertEntityToMongoEntity(EventEntity EventEntity){
-        EventMongoEntity eventMongoEntity=new EventMongoEntity(EventEntity.getId(),EventEntity.getTitle(),EventEntity.getDate());
-        return eventMongoEntity;
+    public EventMongoEntity convertEntityToMongoEntity(EventEntity eventEntity) {
+     return new EventMongoEntity(eventEntity.getId(),
+                                            eventEntity.getTitle(), eventEntity.getDate());
     }
 
-    public UserMongoEntity convertEntityToMongoEntity(UserEntity userEntity){
-        UserMongoEntity userMongoEntity=new UserMongoEntity(userEntity.getId(),userEntity.getName(),userEntity.getEmail());
-        return userMongoEntity;
+    public UserMongoEntity convertEntityToMongoEntity(UserEntity userEntity) {
+       return new UserMongoEntity(userEntity.getId(), userEntity.getName(), userEntity.getEmail());
     }
 
-    public TicketMongoEntity convertEntityToMongoEntity(TicketEntity ticketEntity, EventMongoEntity eventMongoEntity, UserMongoEntity userMongoEntity){
-        TicketMongoEntity ticketMongoEntity=new TicketMongoEntity(ticketEntity.getId(),eventMongoEntity,userMongoEntity, ticketEntity.getCategory().getName(),ticketEntity.getPlace());
-        return ticketMongoEntity;
+    public TicketMongoEntity convertEntityToMongoEntity(TicketEntity ticketEntity,
+                                                        EventMongoEntity eventMongoEntity,
+                                                        UserMongoEntity userMongoEntity) {
+      return new TicketMongoEntity(ticketEntity.getId(), eventMongoEntity, userMongoEntity,
+                                     ticketEntity.getCategory().getName(), ticketEntity.getPlace());
     }
-
 }

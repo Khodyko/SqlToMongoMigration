@@ -59,7 +59,8 @@ public class EventEntity implements Event, Serializable {
         if (this == o) return true;
         if (!(o instanceof EventEntity)) return false;
         EventEntity that = (EventEntity) o;
-        return id == that.id && Objects.equals(title, that.title) && Objects.equals(date, that.date);
+        return id == that.id && Objects.equals(title, that.title)
+                             && Objects.equals(date, that.date);
     }
 
     @Override

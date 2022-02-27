@@ -55,7 +55,8 @@ public class UserEntity implements User, Serializable {
         if (this == o) return true;
         if (!(o instanceof UserEntity)) return false;
         UserEntity that = (UserEntity) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(email, that.email);
+        return id == that.id && Objects.equals(name, that.name)
+                             && Objects.equals(email, that.email);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.example.spring.model.MongoEntity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -38,7 +37,8 @@ public class EventMongoEntity implements Serializable {
         if (this == o) return true;
         if (!(o instanceof EventMongoEntity)) return false;
         EventMongoEntity that = (EventMongoEntity) o;
-        return id == that.id && Objects.equals(title, that.title) && Objects.equals(date, that.date);
+        return id == that.id && Objects.equals(title, that.title)
+                             && Objects.equals(date, that.date);
     }
 
     @Override
